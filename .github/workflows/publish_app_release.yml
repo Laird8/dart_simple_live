@@ -3,7 +3,7 @@ name: app-build-action
 on:
   push:
     branches:
-      -master
+      - master
 jobs:
   build-mac-ios-android:
     runs-on: macos-latest
