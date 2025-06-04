@@ -162,6 +162,30 @@ class LocalStorageService extends GetxService {
   /// WebDAV_最后一次备份时间
   static const String kWebDAVLastRecoverTime = "kWebDAVLastRecoverTime";
 
+  /// 虎牙直播查询用 UserAgent
+  static const String kHuyaQueryUserAgent = "kHuyaQueryUserAgent";
+  
+  /// 虎牙直播播放用 UserAgent
+  static const String kHuyaPlayerUserAgent = "kHuyaPlayerUserAgent";
+  
+  /// 斗鱼直播查询用 UserAgent
+  static const String kDouyuQueryUserAgent = "kDouyuQueryUserAgent";
+  
+  /// 斗鱼直播播放用 UserAgent
+  static const String kDouyuPlayerUserAgent = "kDouyuPlayerUserAgent";
+  
+  /// 抖音直播查询用 UserAgent
+  static const String kDouyinQueryUserAgent = "kDouyinQueryUserAgent";
+  
+  /// 抖音直播播放用 UserAgent
+  static const String kDouyinPlayerUserAgent = "kDouyinPlayerUserAgent";
+  
+  /// 哔哩哔哩直播查询用 UserAgent
+  static const String kBilibiliQueryUserAgent = "kBilibiliQueryUserAgent";
+  
+  /// 哔哩哔哩直播播放用 UserAgent
+  static const String kBilibiliPlayerUserAgent = "kBilibiliPlayerUserAgent";
+
   late Box settingsBox;
   late Box<String> shieldBox;
 

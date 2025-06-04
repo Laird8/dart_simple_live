@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:simple_live_app/app/app_style.dart';
 import 'package:simple_live_app/app/controller/app_settings_controller.dart';
+import 'package:simple_live_app/modules/settings/user_agent_edit_page.dart';
 import 'package:simple_live_app/widgets/settings/settings_card.dart';
 import 'package:simple_live_app/widgets/settings/settings_menu.dart';
 import 'package:simple_live_app/widgets/settings/settings_number.dart';
@@ -233,6 +234,128 @@ class PlaySettingsPage extends GetView<AppSettingsController> {
                       controller.setChatBubbleStyle(e);
                     },
                   ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: AppStyle.edgeInsetsA12.copyWith(top: 24),
+            child: Text(
+              "UserAgent 设置",
+              style: Get.textTheme.titleSmall,
+            ),
+          ),
+          SettingsCard(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // 虎牙直播
+                ListTile(
+                  title: const Text("虎牙直播"),
+                  subtitle: const Text("查询和播放的 UserAgent"),
+                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                  onTap: () {
+                    Get.to(() => UserAgentEditPage(
+                          platform: "huya",
+                          platformName: "虎牙直播",
+                          queryUserAgent: controller.huyaQueryUserAgent.value,
+                          playerUserAgent: controller.huyaPlayerUserAgent.value,
+                          onQueryUserAgentChanged: controller.setHuyaQueryUserAgent,
+                          onPlayerUserAgentChanged: controller.setHuyaPlayerUserAgent,
+                        ));
+                  },
+                ),
+                
+                AppStyle.divider,
+                
+                // 斗鱼直播
+                ListTile(
+                  title: const Text("斗鱼直播"),
+                  subtitle: const Text("查询和播放的 UserAgent"),
+                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                  onTap: () {
+                    Get.to(() => UserAgentEditPage(
+                          platform: "douyu",
+                          platformName: "斗鱼直播",
+                          queryUserAgent: controller.douyuQueryUserAgent.value,
+                          playerUserAgent: controller.douyuPlayerUserAgent.value,
+                          onQueryUserAgentChanged: controller.setDouyuQueryUserAgent,
+                          onPlayerUserAgentChanged: controller.setDouyuPlayerUserAgent,
+                        ));
+                  },
+                ),
+                
+                AppStyle.divider,
+                
+                // 抖音直播
+                ListTile(
+                  title: const Text("抖音直播"),
+                  subtitle: const Text("查询和播放的 UserAgent"),
+                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                  onTap: () {
+                    Get.to(() => UserAgentEditPage(
+                          platform: "douyin",
+                          platformName: "抖音直播",
+                          queryUserAgent: controller.douyinQueryUserAgent.value,
+                          playerUserAgent: controller.douyinPlayerUserAgent.value,
+                          onQueryUserAgentChanged: controller.setDouyinQueryUserAgent,
+                          onPlayerUserAgentChanged: controller.setDouyinPlayerUserAgent,
+                        ));
+                  },
+                ),
+                
+                AppStyle.divider,
+                
+                // 哔哩哔哩直播
+                ListTile(
+                  title: const Text("哔哩哔哩直播"),
+                  subtitle: const Text("查询和播放的 UserAgent"),
+                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                  onTap: () {
+                    Get.to(() => UserAgentEditPage(
+                          platform: "bilibili",
+                          platformName: "哔哩哔哩直播",
+                          queryUserAgent: controller.bilibiliQueryUserAgent.value,
+                          playerUserAgent: controller.bilibiliPlayerUserAgent.value,
+                          onQueryUserAgentChanged: controller.setBiliBiliQueryUserAgent,
+                          onPlayerUserAgentChanged: controller.setBiliBiliPlayerUserAgent,
+                        ));
+                  },
+                ),
+                
+                AppStyle.divider,
+                
+                // 重置所有 UserAgent
+                ListTile(
+                  title: const Text("恢复默认值"),
+                  subtitle: const Text("重置所有平台的 UserAgent 到默认值"),
+                  trailing: const Icon(Icons.refresh, size: 16),
+                  onTap: () {
+                    Get.dialog(
+                      AlertDialog(
+                        title: const Text("重置确认"),
+                        content: const Text("确定要将所有平台的 UserAgent 重置为默认值吗？"),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Get.back(),
+                            child: const Text("取消"),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              controller.resetAllUserAgents();
+                              Get.back();
+                              Get.snackbar(
+                                "重置成功",
+                                "所有平台的 UserAgent 已恢复默认值",
+                                snackPosition: SnackPosition.BOTTOM,
+                              );
+                            },
+                            child: const Text("确定"),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
               ],
             ),

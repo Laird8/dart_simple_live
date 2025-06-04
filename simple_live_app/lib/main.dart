@@ -26,10 +26,13 @@ import 'package:simple_live_app/services/bilibili_account_service.dart';
 import 'package:simple_live_app/services/db_service.dart';
 import 'package:simple_live_app/services/follow_service.dart';
 import 'package:simple_live_app/services/local_storage_service.dart';
+import 'package:simple_live_app/services/service_initializer.dart';
 import 'package:simple_live_app/services/sync_service.dart';
 import 'package:simple_live_app/widgets/status/app_loadding_widget.dart';
 import 'package:simple_live_core/simple_live_core.dart';
 import 'package:window_manager/window_manager.dart';
+import 'package:simple_live_core/src/services/user_agent_service.dart' as core_ua_service;
+import 'package:simple_live_app/services/user_agent_service.dart';
 
 import 'package:path/path.dart' as p;
 import 'package:dynamic_color/dynamic_color.dart';
@@ -44,16 +47,22 @@ void main() async {
         ? (await getApplicationSupportDirectory()).path
         : null,
   );
-  //初始化服务
+  
+  // 初始化服务
   await initServices();
+  
+  // 初始化UserAgent服务连接
+  ServiceInitializer.initializeServices();
+  
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   //设置状态栏为透明
-  SystemUiOverlayStyle systemUiOverlayStyle = const SystemUiOverlayStyle(
+  const systemUiOverlayStyle = SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
-    statusBarIconBrightness: Brightness.dark,
     systemNavigationBarColor: Colors.transparent,
+    systemNavigationBarDividerColor: Colors.transparent,
   );
   SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
+  
   runApp(const MyApp());
 }
 
@@ -121,7 +130,11 @@ Future initServices() async {
   Utils.packageInfo = await PackageInfo.fromPlatform();
   //本地存储
   Log.d("Init LocalStorage Service");
-  await Get.put(LocalStorageService()).init();
+  
+  // 先创建实例并注册到Get中，然后再调用init方法
+  var localStorage = Get.put(LocalStorageService());
+  await localStorage.init();
+  
   await Get.put(DBService()).init();
   //初始化设置控制器
   Get.put(AppSettingsController());

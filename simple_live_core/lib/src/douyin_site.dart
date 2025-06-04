@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:simple_live_core/simple_live_core.dart';
 import 'package:simple_live_core/src/common/convert_helper.dart';
 import 'package:simple_live_core/src/common/http_client.dart';
+import 'package:simple_live_core/src/services/user_agent_service.dart';
 
 class DouyinSite implements LiveSite {
   @override
@@ -15,8 +16,10 @@ class DouyinSite implements LiveSite {
   @override
   LiveDanmaku getDanmaku() => DouyinDanmaku();
 
-  static const String kDefaultUserAgent =
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36 Edg/125.0.0.0";
+  // 查询用 UserAgent
+  String get kQueryUserAgent => UserAgentService.instance.getQueryUserAgent(id);
+  // 播放用 UserAgent
+  String get kPlayerUserAgent => UserAgentService.instance.getPlayerUserAgent(id);
 
   static const String kDefaultReferer = "https://live.douyin.com";
 
@@ -25,14 +28,15 @@ class DouyinSite implements LiveSite {
   Map<String, dynamic> headers = {
     "Authority": kDefaultAuthority,
     "Referer": kDefaultReferer,
-    "User-Agent": kDefaultUserAgent,
   };
 
   Future<Map<String, dynamic>> getRequestHeaders() async {
     try {
       if (headers.containsKey("cookie")) {
+        headers["User-Agent"] = kQueryUserAgent;
         return headers;
       }
+      headers["User-Agent"] = kQueryUserAgent;
       var head = await HttpClient.instance
           .head("https://live.douyin.com", header: headers);
       head.headers["set-cookie"]?.forEach((element) {
@@ -362,6 +366,7 @@ class DouyinSite implements LiveSite {
   /// 进入直播间前需要先获取cookie
   /// - [webRid] 直播间RID
   Future<String> _getWebCookie(String webRid) async {
+    headers["User-Agent"] = kQueryUserAgent;
     var headResp = await HttpClient.instance.head(
       "https://live.douyin.com/$webRid",
       header: headers,
@@ -393,7 +398,7 @@ class DouyinSite implements LiveSite {
         "Authority": kDefaultAuthority,
         "Referer": kDefaultReferer,
         "Cookie": dyCookie,
-        "User-Agent": kDefaultUserAgent,
+        "User-Agent": kQueryUserAgent,
       },
     );
 
@@ -533,7 +538,10 @@ class DouyinSite implements LiveSite {
   Future<LivePlayUrl> getPlayUrls(
       {required LiveRoomDetail detail,
       required LivePlayQuality quality}) async {
-    return LivePlayUrl(urls: quality.data);
+    return LivePlayUrl(
+      urls: quality.data,
+      headers: {"user-agent": kPlayerUserAgent},
+    );
   }
 
   @override
@@ -609,7 +617,7 @@ class DouyinSite implements LiveSite {
         'sec-fetch-dest': 'empty',
         'sec-fetch-mode': 'cors',
         'sec-fetch-site': 'same-origin',
-        'user-agent': kDefaultUserAgent,
+        'user-agent': kQueryUserAgent,
       },
     );
     if (result == "" || result == 'blocked') {
@@ -682,7 +690,7 @@ class DouyinSite implements LiveSite {
         "https://dy.nsapps.cn/abogus",
         queryParameters: {},
         header: {"Content-Type": "application/json"},
-        data: {"url": url, "userAgent": kDefaultUserAgent},
+        data: {"url": url, "userAgent": kQueryUserAgent},
       );
       return signResult["data"]["url"];
     } catch (e) {

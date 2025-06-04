@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:simple_live_core/src/common/convert_helper.dart';
 import 'package:simple_live_core/src/common/http_client.dart';
+import 'package:simple_live_core/src/services/user_agent_service.dart';
 import 'package:simple_live_core/src/danmaku/bilibili_danmaku.dart';
 import 'package:simple_live_core/src/interface/live_danmaku.dart';
 import 'package:simple_live_core/src/interface/live_site.dart';
@@ -29,8 +30,11 @@ class BiliBiliSite implements LiveSite {
   @override
   LiveDanmaku getDanmaku() => BiliBiliDanmaku();
 
-  static const String kDefaultUserAgent =
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0";
+  // 查询用 UserAgent
+  String get kQueryUserAgent => UserAgentService.instance.getQueryUserAgent(id);
+  // 播放用 UserAgent
+  String get kPlayerUserAgent => UserAgentService.instance.getPlayerUserAgent(id);
+  
   static const String kDefaultReferer = "https://live.bilibili.com/";
 
   String buvid3 = "";
@@ -43,7 +47,7 @@ class BiliBiliSite implements LiveSite {
     }
     return cookie.isEmpty
         ? {
-            "user-agent": kDefaultUserAgent,
+            "user-agent": kQueryUserAgent,
             "referer": kDefaultReferer,
             "cookie": 'buvid3=$buvid3;buvid4=$buvid4;',
           }
@@ -51,7 +55,7 @@ class BiliBiliSite implements LiveSite {
             "cookie": cookie.contains("buvid3")
                 ? cookie
                 : "$cookie;buvid3=$buvid3;buvid4=$buvid4;",
-            "user-agent": kDefaultUserAgent,
+            "user-agent": kQueryUserAgent,
             "referer": kDefaultReferer,
           };
   }
@@ -195,8 +199,7 @@ class BiliBiliSite implements LiveSite {
       urls: urls,
       headers: {
         "referer": "https://live.bilibili.com",
-        "user-agent":
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36 Edg/115.0.1901.188"
+        "user-agent": kPlayerUserAgent
       },
     );
   }
@@ -416,7 +419,7 @@ class BiliBiliSite implements LiveSite {
         "https://api.bilibili.com/x/frontend/finger/spi",
         queryParameters: {},
         header: {
-          "user-agent": kDefaultUserAgent,
+          "user-agent": kQueryUserAgent,
           "referer": kDefaultReferer,
           "cookie": cookie,
         },

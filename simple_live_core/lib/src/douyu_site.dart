@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:simple_live_core/src/common/http_client.dart';
+import 'package:simple_live_core/src/services/user_agent_service.dart';
 import 'package:simple_live_core/src/danmaku/douyu_danmaku.dart';
 import 'package:simple_live_core/src/interface/live_danmaku.dart';
 import 'package:simple_live_core/src/interface/live_site.dart';
@@ -23,6 +24,11 @@ class DouyuSite implements LiveSite {
 
   @override
   String name = "斗鱼直播";
+
+  // 查询用 UserAgent
+  String get kQueryUserAgent => UserAgentService.instance.getQueryUserAgent(id);
+  // 播放用 UserAgent
+  String get kPlayerUserAgent => UserAgentService.instance.getPlayerUserAgent(id);
 
   @override
   LiveDanmaku getDanmaku() => DouyuDanmaku();
@@ -135,7 +141,10 @@ class DouyuSite implements LiveSite {
         urls.add(url);
       }
     }
-    return LivePlayUrl(urls: urls);
+    return LivePlayUrl(
+      urls: urls,
+      headers: {"user-agent": kPlayerUserAgent},
+    );
   }
 
   Future<String> getPlayUrl(
@@ -146,8 +155,7 @@ class DouyuSite implements LiveSite {
       data: args,
       header: {
         'referer': 'https://www.douyu.com/$roomId',
-        'user-agent':
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.43"
+        'user-agent': kQueryUserAgent
       },
       formUrlEncoded: true,
     );
@@ -189,8 +197,7 @@ class DouyuSite implements LiveSite {
         queryParameters: {},
         header: {
           'referer': 'https://www.douyu.com/$roomId',
-          'user-agent':
-              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.43"
+          'user-agent': kQueryUserAgent
         });
     var crptext = json.decode(jsEncResult)["data"]["room$roomId"].toString();
 
@@ -223,8 +230,7 @@ class DouyuSite implements LiveSite {
         "pageSize": 20,
       },
       header: {
-        'User-Agent':
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.51',
+        'User-Agent': kQueryUserAgent,
         'referer': 'https://www.douyu.com/search/',
         'Cookie': 'dy_did=$did;acf_did=$did'
       },
@@ -253,8 +259,7 @@ class DouyuSite implements LiveSite {
         queryParameters: {},
         header: {
           'referer': 'https://www.douyu.com/$roomId',
-          'user-agent':
-              'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.43',
+          'user-agent': kQueryUserAgent,
         });
     Map roomInfo;
     if (result is String) {
@@ -289,8 +294,7 @@ class DouyuSite implements LiveSite {
         "filterType": 1,
       },
       header: {
-        'User-Agent':
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.51',
+        'User-Agent': kQueryUserAgent,
         'referer': 'https://www.douyu.com/search/',
         'Cookie': 'dy_did=$did;acf_did=$did'
       },

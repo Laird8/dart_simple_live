@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:simple_live_core/src/common/http_client.dart' as http;
+import 'package:simple_live_core/src/services/user_agent_service.dart';
 
 import 'package:simple_live_core/simple_live_core.dart';
 import 'package:simple_live_core/src/common/web_socket_util.dart';
@@ -76,7 +77,7 @@ class DouyinDanmaku implements LiveDanmaku {
       "browser_platform": "Win32",
       "browser_name": "Mozilla",
       "browser_version":
-          DouyinSite.kDefaultUserAgent.replaceAll("Mozilla/", ""),
+          "5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36 Edg/125.0.0.0",
       "browser_online": "true",
       "tz_name": "Asia/Shanghai",
       "identity": "audience",
@@ -94,7 +95,7 @@ class DouyinDanmaku implements LiveDanmaku {
       url: url,
       backupUrl: backupUrl,
       headers: {
-        "User-Agnet": DouyinSite.kDefaultUserAgent,
+        "User-Agnet": UserAgentService.instance.getQueryUserAgent("douyin"),
         "Cookie": danmakuArgs.cookie,
         "Origin": "https://live.douyin.com"
       },

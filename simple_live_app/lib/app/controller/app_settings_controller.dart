@@ -4,6 +4,7 @@ import 'package:simple_live_app/app/constant.dart';
 import 'package:simple_live_app/app/log.dart';
 import 'package:simple_live_app/app/sites.dart';
 import 'package:simple_live_app/services/local_storage_service.dart';
+import 'package:simple_live_app/services/user_agent_service.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -142,6 +143,47 @@ class AppSettingsController extends GetxController {
 
     updateFollowThreadCount.value = LocalStorageService.instance
         .getValue(LocalStorageService.kUpdateFollowThreadCount, 4);
+
+    // 初始化 UserAgent 设置
+    huyaQueryUserAgent.value = LocalStorageService.instance.getValue(
+      LocalStorageService.kHuyaQueryUserAgent,
+      UserAgentService.instance.getQueryUserAgent("huya"),
+    );
+    
+    huyaPlayerUserAgent.value = LocalStorageService.instance.getValue(
+      LocalStorageService.kHuyaPlayerUserAgent,
+      UserAgentService.instance.getPlayerUserAgent("huya"),
+    );
+    
+    douyuQueryUserAgent.value = LocalStorageService.instance.getValue(
+      LocalStorageService.kDouyuQueryUserAgent,
+      UserAgentService.instance.getQueryUserAgent("douyu"),
+    );
+    
+    douyuPlayerUserAgent.value = LocalStorageService.instance.getValue(
+      LocalStorageService.kDouyuPlayerUserAgent,
+      UserAgentService.instance.getPlayerUserAgent("douyu"),
+    );
+    
+    douyinQueryUserAgent.value = LocalStorageService.instance.getValue(
+      LocalStorageService.kDouyinQueryUserAgent,
+      UserAgentService.instance.getQueryUserAgent("douyin"),
+    );
+    
+    douyinPlayerUserAgent.value = LocalStorageService.instance.getValue(
+      LocalStorageService.kDouyinPlayerUserAgent,
+      UserAgentService.instance.getPlayerUserAgent("douyin"),
+    );
+    
+    bilibiliQueryUserAgent.value = LocalStorageService.instance.getValue(
+      LocalStorageService.kBilibiliQueryUserAgent,
+      UserAgentService.instance.getQueryUserAgent("bilibili"),
+    );
+    
+    bilibiliPlayerUserAgent.value = LocalStorageService.instance.getValue(
+      LocalStorageService.kBilibiliPlayerUserAgent,
+      UserAgentService.instance.getPlayerUserAgent("bilibili"),
+    );
 
     initSiteSort();
     initHomeSort();
@@ -520,5 +562,122 @@ class AppSettingsController extends GetxController {
     playerForceHttps.value = e;
     LocalStorageService.instance
         .setValue(LocalStorageService.kPlayerForceHttps, e);
+  }
+
+  // UserAgent 相关设置
+  
+  // 虎牙直播
+  var huyaQueryUserAgent = "".obs;
+  var huyaPlayerUserAgent = "".obs;
+  
+  // 斗鱼直播
+  var douyuQueryUserAgent = "".obs;
+  var douyuPlayerUserAgent = "".obs;
+  
+  // 抖音直播
+  var douyinQueryUserAgent = "".obs;
+  var douyinPlayerUserAgent = "".obs;
+  
+  // 哔哩哔哩直播
+  var bilibiliQueryUserAgent = "".obs;
+  var bilibiliPlayerUserAgent = "".obs;
+  
+  // 设置虎牙直播查询用 UserAgent
+  void setHuyaQueryUserAgent(String userAgent) {
+    huyaQueryUserAgent.value = userAgent;
+    UserAgentService.instance.setQueryUserAgent("huya", userAgent);
+    LocalStorageService.instance.setValue(
+      LocalStorageService.kHuyaQueryUserAgent,
+      userAgent,
+    );
+  }
+  
+  // 设置虎牙直播播放用 UserAgent
+  void setHuyaPlayerUserAgent(String userAgent) {
+    huyaPlayerUserAgent.value = userAgent;
+    UserAgentService.instance.setPlayerUserAgent("huya", userAgent);
+    LocalStorageService.instance.setValue(
+      LocalStorageService.kHuyaPlayerUserAgent,
+      userAgent,
+    );
+  }
+  
+  // 设置斗鱼直播查询用 UserAgent
+  void setDouyuQueryUserAgent(String userAgent) {
+    douyuQueryUserAgent.value = userAgent;
+    UserAgentService.instance.setQueryUserAgent("douyu", userAgent);
+    LocalStorageService.instance.setValue(
+      LocalStorageService.kDouyuQueryUserAgent,
+      userAgent,
+    );
+  }
+  
+  // 设置斗鱼直播播放用 UserAgent
+  void setDouyuPlayerUserAgent(String userAgent) {
+    douyuPlayerUserAgent.value = userAgent;
+    UserAgentService.instance.setPlayerUserAgent("douyu", userAgent);
+    LocalStorageService.instance.setValue(
+      LocalStorageService.kDouyuPlayerUserAgent,
+      userAgent,
+    );
+  }
+  
+  // 设置抖音直播查询用 UserAgent
+  void setDouyinQueryUserAgent(String userAgent) {
+    douyinQueryUserAgent.value = userAgent;
+    UserAgentService.instance.setQueryUserAgent("douyin", userAgent);
+    LocalStorageService.instance.setValue(
+      LocalStorageService.kDouyinQueryUserAgent,
+      userAgent,
+    );
+  }
+  
+  // 设置抖音直播播放用 UserAgent
+  void setDouyinPlayerUserAgent(String userAgent) {
+    douyinPlayerUserAgent.value = userAgent;
+    UserAgentService.instance.setPlayerUserAgent("douyin", userAgent);
+    LocalStorageService.instance.setValue(
+      LocalStorageService.kDouyinPlayerUserAgent,
+      userAgent,
+    );
+  }
+  
+  // 设置哔哩哔哩直播查询用 UserAgent
+  void setBiliBiliQueryUserAgent(String userAgent) {
+    bilibiliQueryUserAgent.value = userAgent;
+    UserAgentService.instance.setQueryUserAgent("bilibili", userAgent);
+    LocalStorageService.instance.setValue(
+      LocalStorageService.kBilibiliQueryUserAgent,
+      userAgent,
+    );
+  }
+  
+  // 设置哔哩哔哩直播播放用 UserAgent
+  void setBiliBiliPlayerUserAgent(String userAgent) {
+    bilibiliPlayerUserAgent.value = userAgent;
+    UserAgentService.instance.setPlayerUserAgent("bilibili", userAgent);
+    LocalStorageService.instance.setValue(
+      LocalStorageService.kBilibiliPlayerUserAgent,
+      userAgent,
+    );
+  }
+  
+  // 重置所有 UserAgent 到默认值
+  void resetAllUserAgents() {
+    // 虎牙直播
+    setHuyaQueryUserAgent(UserAgentService.instance.defaultQueryUserAgents["huya"]!);
+    setHuyaPlayerUserAgent(UserAgentService.instance.defaultPlayerUserAgents["huya"]!);
+    
+    // 斗鱼直播
+    setDouyuQueryUserAgent(UserAgentService.instance.defaultQueryUserAgents["douyu"]!);
+    setDouyuPlayerUserAgent(UserAgentService.instance.defaultPlayerUserAgents["douyu"]!);
+    
+    // 抖音直播
+    setDouyinQueryUserAgent(UserAgentService.instance.defaultQueryUserAgents["douyin"]!);
+    setDouyinPlayerUserAgent(UserAgentService.instance.defaultPlayerUserAgents["douyin"]!);
+    
+    // 哔哩哔哩直播
+    setBiliBiliQueryUserAgent(UserAgentService.instance.defaultQueryUserAgents["bilibili"]!);
+    setBiliBiliPlayerUserAgent(UserAgentService.instance.defaultPlayerUserAgents["bilibili"]!);
   }
 }

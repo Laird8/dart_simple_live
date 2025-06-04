@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:simple_live_core/src/common/http_client.dart';
+import 'package:simple_live_core/src/services/user_agent_service.dart';
 import 'package:simple_live_core/src/danmaku/huya_danmaku.dart';
 import 'package:simple_live_core/src/interface/live_danmaku.dart';
 import 'package:simple_live_core/src/interface/live_site.dart';
@@ -20,8 +21,10 @@ import 'package:simple_live_core/src/model/tars/get_cdn_token_resp.dart';
 import 'package:tars_dart/tars/net/base_tars_http.dart';
 
 class HuyaSite implements LiveSite {
-  final String kUserAgent =
-      "Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.91 Mobile Safari/537.36 Edg/117.0.0.0";
+  // 查询用 UserAgent
+  String get kQueryUserAgent => UserAgentService.instance.getQueryUserAgent(id);
+  // 播放用 UserAgent
+  String get kPlayerUserAgent => UserAgentService.instance.getPlayerUserAgent(id);
   final BaseTarsHttp tupClient = BaseTarsHttp("http://wup.huya.com", "liveui");
 
   @override
@@ -194,10 +197,12 @@ class HuyaSite implements LiveSite {
       ls.add(url);
     }
     // from stream-rec url:https://github.com/stream-rec/stream-rec
-    return LivePlayUrl(
+    var livePlayUrl = LivePlayUrl(
       urls: ls,
-      headers: {"user-agent": "HYSDK(Windows, 30000002)_APP(pc_exe&6070100&official)_SDK(trans&2.21.0.4784)"},
+      headers: {"user-agent": kPlayerUserAgent},
     );
+    print("huya livePlayUrl: " + livePlayUrl.toString());
+    return livePlayUrl;
   }
 
   Future<String> getPlayUrl(HuyaLineModel line, int bitRate) async {
@@ -324,7 +329,7 @@ class HuyaSite implements LiveSite {
       "https://m.huya.com/$roomId",
       queryParameters: {},
       header: {
-        "user-agent": kUserAgent,
+        "user-agent": kQueryUserAgent,
       },
     );
     var text = RegExp(
@@ -444,7 +449,7 @@ class HuyaSite implements LiveSite {
         "data": {}
       },
       header: {
-        "user-agent": kUserAgent,
+        "user-agent": kQueryUserAgent,
       },
     );
     return result["data"]["uid"].toString();
